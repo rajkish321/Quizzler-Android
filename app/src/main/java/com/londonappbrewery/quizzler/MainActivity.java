@@ -87,7 +87,7 @@ public class MainActivity extends Activity {
         boolean correct = mQuestionBank[idx].isAnswer();
         if (input == correct) {
             Toast.makeText(getApplicationContext(), R.string.correct_toast, Toast.LENGTH_SHORT).show();
-            score++; 
+            score++;
             scoreText.setText("Score " + score + "/" + mQuestionBank.length);
             scorePct = ((double) score) / ((double) mQuestionBank.length);
             mProgressBar.setProgress((int) ((scorePct) * 100));
