@@ -1,6 +1,8 @@
 package com.londonappbrewery.quizzler;
 
 import android.app.Activity;
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
@@ -44,6 +46,14 @@ public class MainActivity extends Activity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        if(savedInstanceState != null){
+            score = savedInstanceState.getInt("ScoreKey");
+            idx = savedInstanceState.getInt("questionIndex");
+
+        } else {
+            score = 0;
+            idx = 0;
+        }
         setContentView(R.layout.activity_main);
         trueButton = findViewById(R.id.true_button);
         falseButton = findViewById(R.id.false_button);
@@ -52,6 +62,7 @@ public class MainActivity extends Activity {
         questionText.setText(curQuestion);
         mProgressBar = findViewById(R.id.progress_bar);
         scoreText = findViewById(R.id.score);
+        scoreText.setText("Score " + score + "/" + mQuestionBank.length);
 
 
         trueButton.setOnClickListener(new View.OnClickListener() {
@@ -78,6 +89,20 @@ public class MainActivity extends Activity {
     private void nextQuestion() {
 
         idx = (idx + 1) % mQuestionBank.length;
+        if(idx == 0){
+            AlertDialog.Builder alert = new AlertDialog.Builder(this);
+            alert.setTitle("Game over");
+            alert.setCancelable(false);
+            alert.setMessage("You have gotten " + score + " out of " + mQuestionBank.length + " questions correct");
+
+            alert.setPositiveButton("Close app", new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+                    finish();
+                }
+            });
+            alert.show();
+        }
         curQuestion = mQuestionBank[idx].getQuestionID();
         questionText.setText(curQuestion);
     }
@@ -94,6 +119,13 @@ public class MainActivity extends Activity {
         } else {
             Toast.makeText(getApplicationContext(), R.string.incorrect_toast, Toast.LENGTH_SHORT).show();
         }
+    }
+
+
+    public void onSaveInstanceState(Bundle outstate) {
+        super.onSaveInstanceState(outstate);
+        outstate.putInt("ScoreKey",score);
+        outstate.putInt("questionIndex",idx);
     }
 
 }
